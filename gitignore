@@ -1,2 +1,6 @@
 # Environments
 env/
+.DS_Store
+Books_data.csv
+csv_save.py
+env/

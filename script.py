@@ -1,67 +1,61 @@
 import requests
 from bs4 import BeautifulSoup
 import re
+import pandas as pd
 
-# On recupere le html de la page 
+
 html = 'https://books.toscrape.com/catalogue/the-black-maria_991/index.html'
-response = requests.get(html)
+data = {}
 
-#affiche le code de reponse
-#print(response.status_code)
+def one_book_data(html):
+    response = requests.get(html)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    #Upc
+    data_upc = soup.find("table", class_ = 'table table-striped').find_all("td")
+    data['U.P.C.'] = data_upc[0].text
+    #Title
+    data_title = soup.find("div", class_ = 'col-sm-6 product_main').find("h1")
+    data['Title'] = data_title.text
+    #price_including_tax 
+    data_price_including_tax = soup.find("table", class_ = 'table table-striped').find_all("td")
+    price_including_tax = re.split(r"£", data_price_including_tax[3].text)
+    data['Price including tax'] = price_including_tax[1]
+    #price_excluding_tax 
+    data_price_excluding = soup.find("table", class_ = 'table table-striped').find_all("td")
+    price_excluding = re.split(r"£", data_price_excluding[2].text)
+    data['Price excluding tax'] = price_excluding[1]
+    #Number available 
+    data_number_available = soup.find("table", class_ = 'table table-striped').find_all("td")
+    number_available = re.findall(r"\d+", data_number_available[5].text)
+    data['Number available'] = number_available[0]
+    # product_description 
+    data_product_description = soup.find("div", id = 'product_description').find_next("p")
+    data['Product description'] = data_product_description.text
+    # category(
+    data_category = soup.find('ul', class_='breadcrumb').find_all("li")
+    category = re.sub("\n", "", data_category[2].text)
+    data['Category'] = category
+    #Stars_rating
+    star_rating = soup.find('p' , class_ = "star-rating")
+    stars_number = star_rating.attrs['class'][1]
+    if stars_number == "One":
+        stars_number = 1
+    elif stars_number == "Two":
+        stars_number = 2
+    elif stars_number == "Three":
+        stars_number = 3
+    elif stars_number == "Four":
+        stars_number = 4
+    elif stars_number == "Five":
+        stars_number = 5
+    data['star number'] = stars_number
+    #image_url 
+    data_img = soup.find('div', class_='item active').find('img')
+    data['img src'] = data_img.attrs['src']
+    return data
 
-soup = BeautifulSoup(response.text, 'html.parser')
-#print(soup)
-
-"""
-Donnée à récupérer:
-
-● product_page_url (on recupere le href du a)
-    #div(class:page_inner) > ul(class: breadcrumb) > li3 > a
-
-● product_description
-    #div(id:product_description) > p
-"""
-# upc
-data_upc = soup.find("table", class_ = 'table table-striped')
-upc_element = data_upc.find_all("td")
-print(f"upc code : {upc_element[0].text}")
-
-#Title
-data_title = soup.find("div", class_ = 'col-sm-6 product_main')
-title_element = data_title.find("h1")
-print(f"Title : {title_element.text}")
-
-#price_including_tax (gerer le regex)
-data_price_including_tax = soup.find("table", class_ = 'table table-striped')
-price_including_tax = data_price_including_tax.find_all("td")
-print(f"price including tax : {price_including_tax[3].text}")
-
-#price_excluding_tax (gerer le regex)
-data_price_excluding = soup.find("table", class_ = 'table table-striped')
-price_excluding_tax = data_price_excluding.find_all("td")
-print(f"price including tax : {price_excluding_tax[2].text}")
-
-#Number available (gerer le regex)
-data_number_available = soup.find("table", class_ = 'table table-striped')
-number_available = data_number_available.find_all("td")
-print(f"number_available : {number_available[5].text}")
-
-# product_description 
-data_product_description = soup.find("div", id = 'product_description')
-product_description = data_product_description.find_next("p")
-print(f"description : {product_description.text}")
-
-# category(on recupere le texte du a)
-data_category = soup.find('ul', class_='breadcrumb')
-category = data_category.find_all("li")
-print(f"category: {category[2].text}")
-
-#Stars_rating
-star_rating = soup.find('p' , class_ = "star-rating")
-print(f" nombre d'etoiles {star_rating.attrs['class'][1]}")
-
-#image_url (Rajouter Url du site devant le img)
-data_img = soup.find('div', class_='item active')
-img = data_img.find('img')
-print(f"img src: {img.attrs['src']}")
+def save_to_csv(data):
+    df = pd.DataFrame([data])
+    df.to_csv('Books_data.csv')
+    return print("data save in Books_data.csv")
 
