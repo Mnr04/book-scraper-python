@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import pandas as pd
+import os
 
 url_category = []
 
@@ -10,10 +11,10 @@ def one_book_data(html):
         Extracts book data from the provided HTML page.
 
         Args:
-            html (_type_): The HTML content of the book page to be scraped.
+            html (str): The HTML content of the book page to be scraped.
 
         Returns:
-            _type_: A dictionary containing the extracted data for the book.
+            dict : A dictionary containing the extracted data for the book.
     """
     data = {}
     response = requests.get(html)
@@ -32,6 +33,7 @@ def one_book_data(html):
     try:
         data_title = soup.find("div", class_ = 'col-sm-6 product_main').find("h1")
         data['Title'] = data_title.text
+        book_title = data['Title']
     except:
         data['Title'] = 'Not Available'
 
@@ -100,15 +102,32 @@ def one_book_data(html):
     try:
         data_img = soup.find('div', class_='item active').find('img')
         data['img src'] = "https://books.toscrape.com" + "/" + re.sub(r"\.\./\.\./", "",data_img.attrs['src'])
+        img_src = data['img src']
     except:
         data['img src'] = 'Not Available'
     all_books_data.append(data)
-    return all_books_data
+    return all_books_data, img_src, book_title
 
 def save_to_csv(category_name, all_books_data):
     df = pd.DataFrame(all_books_data)
     df.to_csv(f'Books_data_{category_name}.csv')
     return df
+
+def download_img(url, category_name, book_title):
+    response = requests.get(url)
+
+    category_name = category_name 
+    file_name = book_title + 'requests.jpg'
+    folder_path = category_name 
+    #Construct the full file path
+    file_path = os.path.join(folder_path, file_name)
+    # Create the target directory if it does not exist.
+    # The 'exist_ok=True' parameter prevents an error if the directory is already present 
+    os.makedirs(folder_path, exist_ok=True)
+    # Open the file path in write binary mode and save the content.
+    with open(file_path, 'wb') as file:
+        file.write(response.content)
+    return print('img dowload')
 
 with requests.Session() as session : 
 
@@ -126,7 +145,6 @@ with requests.Session() as session :
     for url in url_category:
         all_urls = []
         all_books_data = []
-        #print(f'on commence la category {url}')
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -162,7 +180,8 @@ with requests.Session() as session :
                 all_urls.append(full_book_url)
         # For each book URL, start the scraping and save the data to CSV
         for element in all_urls:
-            one_book_data(element)
+            all_books_data, img_src, book_title = one_book_data(element)
+            download_img(img_src, category_name, book_title)
             df = save_to_csv(category_name, all_books_data)
         print(f'category {category_name } Finished with {len(df)} registred')
 
