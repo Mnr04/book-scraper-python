@@ -1,4 +1,4 @@
 .DS_Store
-Books_data.csv
-csv_save.py
 env/
+__pycache__/
+Books_data.csv
