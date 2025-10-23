@@ -21,6 +21,7 @@ def fetch_category_urls(html) -> list:
         list: A list of strings, where each string is the absolute URL
               of a book category page.
     """
+    print("Starting to fetch the full URLs for all book categories on the page.")
     response = requests.get(html)
     soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -28,6 +29,7 @@ def fetch_category_urls(html) -> list:
     for li in soup.find('div', class_ = 'side_categories').find_all('li')[1:]:
         full_link = html  + li.find('a').attrs['href']
         urls_category.append(full_link)
+    print("All URLs fetched successfully.")
     return urls_category
 
 #A function to retrieve book URLs by category.
