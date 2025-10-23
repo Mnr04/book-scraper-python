@@ -1,9 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 import re
-import requests
-from bs4 import BeautifulSoup
-import re
 import pandas as pd
 import os
 
@@ -38,8 +35,6 @@ def retrieve_book_url(url, html):
     # La fonction on lui donne une categorie elle retourne tout les urls des livres de cette categorie
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
-    #Get the category book
-    category_title = soup.find('div', class_='page-header action').find('h1').text
     # Retrieve book URLs from the first page
     section = soup.find('section').find_all('li', class_ = 'col-xs-6 col-sm-4 col-md-3 col-lg-3')
     for li in section:
@@ -66,7 +61,7 @@ def retrieve_book_url(url, html):
             # Constructs the full URL for the book
             full_book_url = html +  '/catalogue' + re.sub(r"\.\./\.\./\.\.", "", link_data.attrs['href']) 
             all_books_urls.append(full_book_url)
-    return all_books_urls, category_title
+    return all_books_urls
 
 #A function to extract all book data.
 def one_book_data(html):
@@ -90,6 +85,8 @@ def one_book_data(html):
         data_category = soup.find('ul', class_ = 'breadcrumb')
         li_href = data_category.find_all('li')
         category_name = li_href[2].text
+        #clean \n
+        category_name = re.sub(r"\n", "", category_name)
     except : 
         print("no category name find")
 
@@ -180,9 +177,9 @@ def one_book_data(html):
     return data, img_src, book_title, category_name
 
 #A function to download and save images.
-def download_img(url, category_name, book_title):
+def download_img(img_src, category_name, book_title):
 
-    response = requests.get(url)
+    response = requests.get(img_src)
 
     category_name = category_name 
     file_name = book_title + 'requests.jpg'
@@ -195,10 +192,8 @@ def download_img(url, category_name, book_title):
     # Open the file path in write binary mode and save the content.
     with open(file_path, 'wb') as file:
         file.write(response.content)
-    return print('img dowload')
-
+    
 #A function to save data to a CSV file.
 def save_to_csv(category_name, data):
     df = pd.DataFrame([data])
-    df.to_csv(f'Books_data_{category_name}.csv')
-    return df
+    df.to_csv(f'Books_data_{category_name}.csv', mode='a')
