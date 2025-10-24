@@ -13,5 +13,5 @@ __pycache__/
 # --- Project-specific files and directories ---
 
 # Downloaded or generated data
-/img_downloads/
+img_downloads/
 /Books_data_csv/
