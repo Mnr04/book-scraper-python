@@ -17,7 +17,7 @@ The main.py program allows extracting data from https://books.toscrape.com/index
 - **Python 3** (version 3.6 or higher recommended)
 - **Git**
 
-###1. Get the Project
+### 1. Get the Project
 
 Navigate to your desired folder, then clone the repository:
 
