@@ -14,7 +14,7 @@ def main():
     #Loop Through Categories to Get Book URLs
     print("Fetching book URLs by category...")
 
-    for url in tqdm(urls_category[:2]):
+    for url in tqdm(urls_category):
         all_books_urls= retrieve_book_url(url, html)
 
     print("Successfully fetched all book URLs by category.")
@@ -23,8 +23,8 @@ def main():
     print("Starting main process: Scraping URLs, downloading images, and saving to CSV files...")
 
     for books in tqdm(all_books_urls):
-        data ,img_src, book_title, category_name = one_book_data(books)
-        download_img(img_src, category_name, book_title)
+        data ,img_src, upc, category_name = one_book_data(books)
+        download_img(img_src, category_name, upc)
         save_to_csv(category_name, data)
 
     print("Main process complete: Data scraped, images downloaded, and CSV files saved successfully.")

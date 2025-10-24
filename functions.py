@@ -82,28 +82,20 @@ def one_book_data(html):
     # Product Page
     data['Product_Page'] = html
 
-    #Category Name
-    try:
-        data_category = soup.find('ul', class_ = 'breadcrumb')
-        li_href = data_category.find_all('li')
-        category_name = li_href[2].text
-        #clean \n
-        category_name = re.sub(r"\n", "", category_name)
-    except : 
-        print("no category name find")
 
     # U.P.C.
     try:
         data_upc = soup.find("table", class_ = 'table table-striped').find_all("td")
-        data['U.P.C.'] = data_upc[0].text
+        data['universal_ product_code (upc)'] = data_upc[0].text
+        upc = data_upc[0].text
     except:
-        data['U.P.C.'] = 'Not Available'
+        data['universal_ product_code (upc)'] = 'Not Available'
 
     # Title
     try:
         data_title = soup.find("div", class_ = 'col-sm-6 product_main').find("h1")
-        data['Title'] = data_title.text
-        book_title = data['Title']
+        clean_title_text = re.sub(r"/", " ", data_title.text)
+        data['Title'] = clean_title_text
     except:
         data['Title'] = 'Not Available'
 
@@ -111,40 +103,43 @@ def one_book_data(html):
     try:
         data_price_including_tax = soup.find("table", class_ = 'table table-striped').find_all("td")
         price_including_tax = re.split(r"£", data_price_including_tax[3].text)
-        data['Price including tax'] = price_including_tax[1]
+        data['price_including_tax'] = price_including_tax[1]
     except:
-        data['Price including tax'] = 'Not Available'
+        data['price_including_tax'] = 'Not Available'
 
     # Price excluding tax
     try:
         data_price_excluding = soup.find("table", class_ = 'table table-striped').find_all("td")
         price_excluding = re.split(r"£", data_price_excluding[2].text)
-        data['Price excluding tax'] = price_excluding[1]
+        data['price_excluding_tax'] = price_excluding[1]
     except:
-        data['Price excluding tax'] = 'Not Available'
+        data['price_excluding_tax'] = 'Not Available'
 
     # Number available
     try:
         data_number_available = soup.find("table", class_ = 'table table-striped').find_all("td")
         number_available = re.findall(r"\d+", data_number_available[5].text)
-        data['Number available'] = number_available[0]
+        data['number_available'] = number_available[0]
     except:
-        data['Number available'] = 'Not Available'
+        data['number_available'] = 'Not Available'
 
     # Product description (déjà avec try/except, conservé tel quel)
     try : 
         data_product_description = soup.find("div", id = 'product_description').find_next("p")
-        data['Product description'] = data_product_description.text
+        data['product_description'] = data_product_description.text
     except :
-        data['Product description'] = 'Not Available' 
+        data['product_description'] = 'Not Available' 
 
-    # Category
+     #Category Name
     try:
-        data_category = soup.find('ul', class_='breadcrumb').find_all("li")
-        category = re.sub("\n", "", data_category[2].text)
-        data['Category'] = category
-    except:
-        data['Category'] = 'Not Available'
+        data_category = soup.find('ul', class_ = 'breadcrumb')
+        li_href = data_category.find_all('li')
+        category_name = li_href[2].text
+        #clean \n
+        category_name = re.sub(r"\n", "", category_name)
+        data['category'] = category_name
+    except : 
+        print("no category name find")
 
     # Stars_rating
     try:
@@ -164,22 +159,22 @@ def one_book_data(html):
         else:
             stars_number = 0 
             
-        data['star number'] = stars_number
+        data['review_rating'] = stars_number
     except:
-        data['star number'] = 0 
+        data['review_rating'] = 0 
 
     # image_url
     try:
         data_img = soup.find('div', class_='item active').find('img')
-        data['img src'] = "https://books.toscrape.com" + "/" + re.sub(r"\.\./\.\./", "",data_img.attrs['src'])
-        img_src = data['img src']
+        data['image_url'] = "https://books.toscrape.com" + "/" + re.sub(r"\.\./\.\./", "",data_img.attrs['src'])
+        img_src = data['image_url']
     except:
-        data['img src'] = 'Not Available'
+        data['image_url'] = 'Not Available'
     #all_books_data.append(data)
-    return data, img_src, book_title, category_name
+    return data, img_src, upc, category_name
 
 #A function to download and save images.
-def download_img(img_src, category_name, book_title):
+def download_img(img_src, category_name, upc):
     """Downloads an image and saves it into a specific category folder.
 
     Args:
@@ -189,7 +184,7 @@ def download_img(img_src, category_name, book_title):
     """
     response = requests.get(img_src)
     category_name = category_name 
-    file_name = book_title + 'requests.jpg'
+    file_name = upc + '.jpg'
     #create directory img files
     directory_file = "img_downloads"
     os.makedirs(directory_file, exist_ok=True)
@@ -210,7 +205,25 @@ def save_to_csv(category_name, data):
         category_name (str): The category used to name the target CSV file.
         data (dict): The data row to append to the CSV.
     """
+    CSV_HEADERS = [
+    'Product_Page', 
+    'universal_ product_code (upc)', 
+    'Title', 
+    'price_including_tax', 
+    'price_excluding_tax', 
+    'number_available', 
+    'product_description', 
+    'category', 
+    'review_rating', 
+    'image_url' 
+    ]
+    # Create path
     directory_file = 'Books_data_csv'
+    file_path = f'{directory_file}/{category_name}_Books_data.csv'
+    # Create folder 
     os.makedirs(directory_file, exist_ok=True)
+    #write header for new files
+    write_header = not os.path.exists(file_path)
+
     df = pd.DataFrame([data])
-    df.to_csv(f'{directory_file}/{category_name}_Books_data.csv', mode='a')
+    df.to_csv(file_path, mode='a', header=write_header, index=False, columns=CSV_HEADERS)
