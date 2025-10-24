@@ -1,47 +1,44 @@
 # book-scraper-python
 
-## P2 : Utilisez les bases de Python pour l'analyse de marché
+## P2: Use Python basics for market analysis
 
-Ce projet Python a été réalisé dans le cadre du Projet 2 du parcours **Développeur d'Applications Python** d'OpenClassrooms.
+This Python project was completed as part of Project 2 of the **Python Application Developer** path at OpenClassrooms.
 
-Il met en œuvre un programme de *web scraping* pour extraire des données tarifaires et des informations détaillées de la librairie fictive **Books to Scrape**. Les données sont ensuite structurées et exportées sous forme de fichiers **CSV**.
+It implements a web scraping program to extract pricing data and detailed information from the fictional bookstore Books to Scrape. The data is then structured and exported as **CSV** files.
 
----
+## ⚙️ Scraper Features
 
-## ⚙️ Fonctionnalités du Scraper
+The main.py program allows extracting data from https://books.toscrape.com/index.html and saving detailed information (title, price, description, stock, etc.) into one or more optimized CSV files, as well as the cover images.
 
-Le programme `main.py` permet d'extraire des données de `https://books.toscrape.com/index.html` et d'enregistrer les informations détaillées (titre, prix, description, stock, etc.) dans un ou plusieurs fichiers **CSV** optimisés, ainsi que les images de couverture.
+## 💻 Installation and Execution Instructions
 
----
+### Prerequisites
 
-## 💻 Instructions d'Installation et d'Exécution
+- **Python 3** (version 3.6 or higher recommended)
+- **Git**
 
-### Prérequis
+###1. Get the Project
 
-* **Python 3** (version 3.6 ou supérieure recommandée)
-* **Git**
+Navigate to your desired folder, then clone the repository:
 
-### 1. Récupération du Projet
+git clone https://github.com/Mnr04/book-scraper-python.git
 
-Naviguez vers le dossier souhaité, puis clonez le *repository* :
+### 2 . Set up the virtual environment
 
-### 2 . Configuration de l'environnement virtuel
+Operating System Commands
 
-Système d'Exploitation      Commandes
+Windows (Powershell) python -m venv env .\env\Scripts\activate MacOS / Linux (Terminal) python3 -m venv env source env/bin/activate
 
-Windows (Powershell)        python -m venv env .\env\Scripts\activate
-MacOS / Linux (Terminal)    python3 -m venv env source env/bin/activate
+### 3. Install Required Packages
 
- ### 3. Installation des Paquets Requis
-Une fois l'environnement activé, installez les dépendances nécessaires (requests, beautifulsoup4, pandas, etc.) :
+Once the environment is activated, install the necessary dependencies (requests, beautifulsoup4, pandas, etc.):
 
 pip install -r requirements.txt
 
-### 4. Lancement du Programme
+### 4. Run the Program
 
-Exécutez le script principal :
+Execute the main script:
 
-Système d'Exploitation  Commande  
+Operating System Command
 
-Windows                 python main.py
-MacOS / Linux           python3 main.py
+Windows python main.py MacOS / Linux python3 main.py
