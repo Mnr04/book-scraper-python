@@ -191,7 +191,7 @@ def download_img(img_src, category_name, book_title):
     category_name = category_name 
     file_name = book_title + 'requests.jpg'
     #create directory img files
-    directory_file = "img_dowloads"
+    directory_file = "img_downloads"
     os.makedirs(directory_file, exist_ok=True)
     folder_path = os.path.join( directory_file, category_name )
       # The 'exist_ok=True' parameter prevents an error if the directory is already present 
