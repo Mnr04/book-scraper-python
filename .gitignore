@@ -1,5 +1,17 @@
+# macOS specific system files
 .DS_Store
-env/
-venv/
+
+# --- Python ---
+
+# Virtual environment directories
+/env/
+/venv/
+
+# Python cache
 __pycache__/
-Books_data.csv
+
+# --- Project-specific files and directories ---
+
+# Downloaded or generated data
+/img_downloads/
+/Books_data_csv/

@@ -14,7 +14,7 @@ def main():
     #Loop Through Categories to Get Book URLs
     print("Fetching book URLs by category...")
 
-    for url in tqdm(urls_category):
+    for url in tqdm(urls_category[:2]):
         all_books_urls= retrieve_book_url(url, html)
 
     print("Successfully fetched all book URLs by category.")

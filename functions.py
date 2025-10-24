@@ -180,22 +180,37 @@ def one_book_data(html):
 
 #A function to download and save images.
 def download_img(img_src, category_name, book_title):
+    """Downloads an image and saves it into a specific category folder.
 
+    Args:
+        img_src (str): The URL of the image to download.
+        category_name (str): The name of the subfolder to save the image in.
+        book_title (str): The base name for the saved image file.
+    """
     response = requests.get(img_src)
-
     category_name = category_name 
     file_name = book_title + 'requests.jpg'
-    folder_path = category_name 
+    #create directory img files
+    directory_file = "img_dowloads"
+    os.makedirs(directory_file, exist_ok=True)
+    folder_path = os.path.join( directory_file, category_name )
+      # The 'exist_ok=True' parameter prevents an error if the directory is already present 
+    os.makedirs(folder_path, exist_ok=True)
     #Construct the full file path
     file_path = os.path.join(folder_path, file_name)
-    # Create the target directory if it does not exist.
-    # The 'exist_ok=True' parameter prevents an error if the directory is already present 
-    os.makedirs(folder_path, exist_ok=True)
     # Open the file path in write binary mode and save the content.
     with open(file_path, 'wb') as file:
         file.write(response.content)
-    
+      
 #A function to save data to a CSV file.
 def save_to_csv(category_name, data):
+    """Appends a dictionary of data as a new row to a CSV.
+
+    Args:
+        category_name (str): The category used to name the target CSV file.
+        data (dict): The data row to append to the CSV.
+    """
+    directory_file = 'Books_data_csv'
+    os.makedirs(directory_file, exist_ok=True)
     df = pd.DataFrame([data])
-    df.to_csv(f'Books_data_{category_name}.csv', mode='a')
+    df.to_csv(f'{directory_file}/{category_name}_Books_data.csv', mode='a')
