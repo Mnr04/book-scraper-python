@@ -27,7 +27,9 @@ git clone https://github.com/Mnr04/book-scraper-python.git
 
 Operating System Commands
 
-Windows (Powershell) python -m venv env .\env\Scripts\activate MacOS / Linux (Terminal) python3 -m venv env source env/bin/activate
+Windows (Powershell) python -m venv env .\env\Scripts\activate 
+
+MacOS / Linux (Terminal) python3 -m venv env source env/bin/activate
 
 ### 3. Install Required Packages
 
@@ -41,4 +43,6 @@ Execute the main script:
 
 Operating System Command
 
-Windows python main.py MacOS / Linux python3 main.py
+Windows python main.py 
+
+MacOS / Linux python3 main.py
