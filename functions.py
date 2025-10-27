@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import pandas as pd
 import os
+from halo import Halo
 
 
 urls_category = []
@@ -22,6 +23,8 @@ def fetch_category_urls(html) -> list:
               of a book category page.
     """
     print("Starting to fetch the full URLs for all book categories on the page.")
+    spinner = Halo(text='Loading', spinner='dots')
+    spinner.start()
     response = requests.get(html)
     soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -29,6 +32,7 @@ def fetch_category_urls(html) -> list:
     for li in soup.find('div', class_ = 'side_categories').find_all('li')[1:]:
         full_link = html  + li.find('a').attrs['href']
         urls_category.append(full_link)
+    spinner.stop()
     print("All URLs fetched successfully.")
     return urls_category
 
@@ -123,7 +127,7 @@ def one_book_data(html):
     except:
         data['number_available'] = 'Not Available'
 
-    # Product description (déjà avec try/except, conservé tel quel)
+    # Product description 
     try : 
         data_product_description = soup.find("div", id = 'product_description').find_next("p")
         data['product_description'] = data_product_description.text
@@ -170,7 +174,6 @@ def one_book_data(html):
         img_src = data['image_url']
     except:
         data['image_url'] = 'Not Available'
-    #all_books_data.append(data)
     return data, img_src, upc, category_name
 
 #A function to download and save images.
