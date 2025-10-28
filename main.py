@@ -1,6 +1,6 @@
 from functions import fetch_category_urls, retrieve_book_url, save_to_csv, download_img,one_book_data
 from tqdm import tqdm
-
+from halo import Halo
 
 def main():
     # Base URL of the website to be scraped

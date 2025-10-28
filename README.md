@@ -25,11 +25,9 @@ git clone https://github.com/Mnr04/book-scraper-python.git
 
 ### 2 . Set up the virtual environment
 
-Operating System Commands
+Windows (Powershell) -- > python -m venv env .\env\Scripts\activate 
 
-Windows (Powershell) python -m venv env .\env\Scripts\activate 
-
-MacOS / Linux (Terminal) python3 -m venv env source env/bin/activate
+MacOS / Linux (Terminal) -->  python3 -m venv env source env/bin/activate
 
 ### 3. Install Required Packages
 
@@ -41,8 +39,6 @@ pip install -r requirements.txt
 
 Execute the main script:
 
-Operating System Command
+Windows -->  python main.py 
 
-Windows python main.py 
-
-MacOS / Linux python3 main.py
+MacOS / Linux -->  python3 main.py
