@@ -25,13 +25,19 @@ git clone https://github.com/Mnr04/book-scraper-python.git
 
 ### 2 . Set up the virtual environment
 
-Windows (Powershell) -- > python -m venv env .\env\Scripts\activate 
+### A . create the virtual environment
 
-MacOS / Linux (Terminal) -->  python3 -m venv env source env/bin/activate
+Windows (Powershell) -- > python -m venv env 
+
+MacOS / Linux (Terminal) -->  python3 -m venv env 
+
+### B . Activate the environment
+
+Windows (Powershell) -- > .\env\Scripts\activate 
+
+MacOS / Linux (Terminal) --> source env/bin/activate
 
 ### 3. Install Required Packages
-
-Once the environment is activated, install the necessary dependencies (requests, beautifulsoup4, pandas, etc.):
 
 pip install -r requirements.txt
 
