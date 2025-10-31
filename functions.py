@@ -38,6 +38,19 @@ def fetch_category_urls(html) -> list:
 
 #A function to retrieve book URLs by category.
 def retrieve_book_url(url, html):
+    """Retrieves all book URLs from a category, handling pagination.
+
+    Scrapes a category's first page and follows all 'next' page links
+    to gather the absolute URLs for every book in that category.
+
+    Args:
+        url (str): The URL of the category's first page.
+        html (str): The website's base URL for constructing full book URLs.
+
+    Returns:
+        list: A list of strings, containing the full, absolute URLs
+              for all books found in the category.
+    """
     # La fonction on lui donne une categorie elle retourne tout les urls des livres de cette categorie
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
